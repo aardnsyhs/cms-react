@@ -22,6 +22,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('types/{type_id}/entries', [EntryController::class, 'store'])->name('entries.store');
     Route::put('entries/{entry}', [EntryController::class, 'update'])->name('entries.update');
     Route::post('entries/{entry}/publish', [PublishController::class, 'publish'])->name('entries.publish');
+    Route::get('/content-types', [ContentTypeController::class, 'index'])
+        ->name('content-types.index');
 });
 
 require __DIR__ . '/settings.php';
