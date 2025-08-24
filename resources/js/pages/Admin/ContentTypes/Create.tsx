@@ -1,4 +1,9 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Head, Link, router } from '@inertiajs/react';
+import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Create() {
@@ -16,38 +21,37 @@ export default function Create() {
         <>
             <Head title="New Content Type" />
             <div className="mx-auto max-w-3xl space-y-6 p-6">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">New Content Type</h1>
-                    <Link href={route('admin.content-types.index')} className="text-sm underline">
-                        Back
-                    </Link>
-                </div>
-                <div className="space-y-4 rounded-2xl border p-5">
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium">Name</label>
-                        <input
-                            className="w-full rounded-xl border px-3 py-2"
-                            value={name}
-                            onChange={(e) => {
-                                setName(e.target.value);
-                                if (!slug) setSlug(toSlug(e.target.value));
-                            }}
-                            placeholder="Article"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium">Slug</label>
-                        <input
-                            className="w-full rounded-xl border px-3 py-2"
-                            value={slug}
-                            onChange={(e) => setSlug(toSlug(e.target.value))}
-                            placeholder="article"
-                        />
-                    </div>
-                    <div className="pt-2">
-                        <button
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <CardTitle>New Content Type</CardTitle>
+                            <Button asChild variant="ghost">
+                                <Link href={route('admin.content-types.index')}>Back</Link>
+                            </Button>
+                        </div>
+                        <CardDescription>Create a new content type to define the structure for your entries.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Name</Label>
+                            <Input
+                                id="name"
+                                value={name}
+                                onChange={(e) => {
+                                    setName(e.target.value);
+                                    if (!slug) setSlug(toSlug(e.target.value));
+                                }}
+                                placeholder="Article"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="slug">Slug</Label>
+                            <Input id="slug" value={slug} onChange={(e) => setSlug(toSlug(e.target.value))} placeholder="article" />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button
                             disabled={saving}
-                            className="rounded-xl border px-4 py-2 hover:bg-gray-50"
                             onClick={() => {
                                 setSaving(true);
                                 router.post(
@@ -59,10 +63,16 @@ export default function Create() {
                                 );
                             }}
                         >
-                            {saving ? 'Saving…' : 'Create'}
-                        </button>
-                    </div>
-                </div>
+                            {saving ? (
+                                <span className="flex items-center">
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving…
+                                </span>
+                            ) : (
+                                'Create'
+                            )}
+                        </Button>
+                    </CardFooter>
+                </Card>
             </div>
         </>
     );

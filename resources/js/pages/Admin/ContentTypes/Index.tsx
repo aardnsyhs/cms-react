@@ -1,3 +1,8 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Pagination, PaginationContent, PaginationItem } from '@/components/ui/pagination';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -47,104 +52,95 @@ export default function Index() {
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Content Types</h1>
                     {can.create && (
-                        <Link
-                            href={route('admin.content-types.create')}
-                            className="inline-flex items-center rounded-xl border px-4 py-2 shadow-sm hover:bg-gray-50"
-                        >
-                            + New Type
-                        </Link>
+                        <Button asChild>
+                            <Link href={route('admin.content-types.create')}>+ New Type</Link>
+                        </Button>
                     )}
                 </div>
                 <form onSubmit={onSearch} className="flex items-center gap-2">
-                    <input
-                        className="w-full rounded-xl border px-3 py-2 md:w-80"
-                        placeholder="Search name or slug…"
-                        value={q}
-                        onChange={(e) => setQ(e.target.value)}
-                    />
-                    <button type="submit" className="rounded-xl border px-4 py-2 shadow-sm hover:bg-gray-50">
-                        Search
-                    </button>
+                    <Input className="w-full md:w-80" placeholder="Search name or slug…" value={q} onChange={(e) => setQ(e.target.value)} />
+                    <Button type="submit">Search</Button>
                     {filters?.q && (
-                        <Link
-                            href={route('admin.content-types.index')}
-                            className="rounded-xl border px-3 py-2 shadow-sm hover:bg-gray-50"
-                            preserveState
-                            replace
-                        >
-                            Reset
-                        </Link>
+                        <Button asChild variant="ghost">
+                            <Link href={route('admin.content-types.index')} preserveState replace>
+                                Reset
+                            </Link>
+                        </Button>
                     )}
                 </form>
-                <div className="overflow-hidden rounded-2xl border">
-                    <table className="min-w-full text-sm">
-                        <thead className="bg-gray-50 text-black">
-                            <tr>
-                                <th className="px-4 py-3 text-left font-medium">Name</th>
-                                <th className="px-4 py-3 text-left font-medium">Slug</th>
-                                <th className="px-4 py-3 text-left font-medium">Entries</th>
-                                <th className="px-4 py-3 text-left font-medium">Updated</th>
-                                <th className="px-4 py-3 text-right font-medium">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows.length === 0 && (
-                                <tr>
-                                    <td className="px-4 py-6 text-center text-gray-500" colSpan={5}>
-                                        No content types found.
-                                    </td>
-                                </tr>
-                            )}
-                            {rows.map((t) => (
-                                <tr key={t.id} className="border-t">
-                                    <td className="px-4 py-3">{t.name}</td>
-                                    <td className="px-4 py-3 text-gray-600">{t.slug}</td>
-                                    <td className="px-4 py-3">{t.entries_count}</td>
-                                    <td className="px-4 py-3 text-gray-500">{new Date(t.updated_at).toLocaleString()}</td>
-                                    <td className="px-4 py-3">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <Link href="#" className="rounded-lg border px-3 py-1 hover:bg-gray-50">
-                                                View
-                                            </Link>
-                                            {can.update && (
-                                                <Link
-                                                    href={route('admin.content-types.edit', t.id)}
-                                                    className="rounded-lg border px-3 py-1 hover:bg-gray-50"
-                                                >
-                                                    Edit
-                                                </Link>
-                                            )}
-                                            {can.delete && (
-                                                <button
-                                                    className="rounded-lg border px-3 py-1 hover:bg-red-50"
-                                                    onClick={() => alert('TODO: delete')}
-                                                    type="button"
-                                                >
-                                                    Delete
-                                                </button>
-                                            )}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>List of Content Types</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[200px]">Name</TableHead>
+                                    <TableHead>Slug</TableHead>
+                                    <TableHead>Entries</TableHead>
+                                    <TableHead>Updated</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {rows.length === 0 && (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center text-gray-500">
+                                            No content types found.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                                {rows.map((t) => (
+                                    <TableRow key={t.id}>
+                                        <TableCell className="font-medium">{t.name}</TableCell>
+                                        <TableCell className="text-gray-600">{t.slug}</TableCell>
+                                        <TableCell>{t.entries_count}</TableCell>
+                                        <TableCell className="text-gray-500">{new Date(t.updated_at).toLocaleString()}</TableCell>
+                                        <TableCell className="text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <Button asChild variant="ghost" size="sm">
+                                                    <Link href="#">View</Link>
+                                                </Button>
+                                                {can.update && (
+                                                    <Button asChild variant="ghost" size="sm">
+                                                        <Link href={route('admin.content-types.edit', t.id)}>Edit</Link>
+                                                    </Button>
+                                                )}
+                                                {can.delete && (
+                                                    <Button variant="ghost" size="sm" onClick={() => alert('TODO: delete')}>
+                                                        Delete
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
                 {types.links?.length > 0 && (
-                    <nav className="flex flex-wrap items-center gap-2">
-                        {types.links.map((l, idx) => (
-                            <Link
-                                key={idx}
-                                href={l.url ?? '#'}
-                                className={`rounded-lg border px-3 py-1 ${
-                                    l.active ? 'bg-gray-100 font-medium' : 'hover:bg-gray-50'
-                                } ${!l.url ? 'pointer-events-none opacity-50' : ''}`}
-                                dangerouslySetInnerHTML={{ __html: l.label }}
-                                preserveState
-                                replace
-                            />
-                        ))}
-                    </nav>
+                    <div className="flex items-center justify-center">
+                        <Pagination>
+                            <PaginationContent>
+                                {types.links.map((l, idx) => {
+                                    const isPrev = l.label === '&laquo; Previous';
+                                    const isNext = l.label === 'Next &raquo;';
+                                    const label = isPrev ? 'Previous' : isNext ? 'Next' : l.label;
+                                    return (
+                                        <PaginationItem key={idx}>
+                                            <Button asChild variant={l.active ? 'outline' : 'ghost'} size="sm" disabled={!l.url}>
+                                                <Link href={l.url ?? '#'} preserveState replace>
+                                                    <span dangerouslySetInnerHTML={{ __html: label }} />
+                                                </Link>
+                                            </Button>
+                                        </PaginationItem>
+                                    );
+                                })}
+                            </PaginationContent>
+                        </Pagination>
+                    </div>
                 )}
             </div>
         </>

@@ -1,3 +1,10 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -111,45 +118,46 @@ export default function Edit() {
         <>
             <Head title={`Edit: ${props.type.name}`} />
             <div className="mx-auto max-w-5xl space-y-8 p-6">
-                <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                        <h1 className="text-2xl font-semibold">Edit Content Type</h1>
-                        <p className="text-sm text-gray-500">ID #{props.type.id}</p>
-                    </div>
-                    <Link href={route('admin.content-types.index')} className="text-sm underline">
-                        Back
-                    </Link>
-                </div>
-                <div className="space-y-4 rounded-2xl border p-5">
-                    <div className="grid gap-4 md:grid-cols-2">
-                        <div>
-                            <label className="block text-sm font-medium">Name</label>
-                            <input className="w-full rounded-xl border px-3 py-2" value={name} onChange={(e) => setName(e.target.value)} />
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <CardTitle>Edit Content Type</CardTitle>
+                            <Button asChild variant="ghost">
+                                <Link href={route('admin.content-types.index')}>Back</Link>
+                            </Button>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium">Slug</label>
-                            <input
-                                className="w-full rounded-xl border px-3 py-2"
-                                value={slug}
-                                onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-'))}
-                            />
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                            <div>
+                                <Label htmlFor="type-name">Name</Label>
+                                <Input id="type-name" value={name} onChange={(e) => setName(e.target.value)} />
+                            </div>
+                            <div>
+                                <Label htmlFor="type-slug">Slug</Label>
+                                <Input
+                                    id="type-slug"
+                                    value={slug}
+                                    onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-'))}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <button onClick={saveType} className="rounded-xl border px-4 py-2 hover:bg-gray-50">
-                        Save Type
-                    </button>
-                </div>
-                <div className="rounded-2xl border">
-                    <div className="flex items-center justify-between p-5">
-                        <h2 className="text-lg font-semibold">Fields</h2>
-                        <button onClick={openAdd} className="rounded-xl border px-3 py-2 hover:bg-gray-50">
-                            + Add Field
-                        </button>
-                    </div>
-                    <div className="px-5 pb-5">
+                    </CardContent>
+                    <CardFooter>
+                        <Button onClick={saveType}>Save Type</Button>
+                    </CardFooter>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <CardTitle>Fields</CardTitle>
+                            <Button onClick={openAdd}>+ Add Field</Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="px-5 pb-5">
                         <div onDrop={onDropList} onDragOver={(e) => e.preventDefault()} className="rounded-xl border bg-gray-50/50">
                             {rows.length === 0 && <div className="p-6 text-center text-gray-500">No fields yet.</div>}
-                            {rows.map((f) => (
+                            {rows.map((f: Field) => (
                                 <div
                                     key={f.id}
                                     draggable
@@ -167,67 +175,66 @@ export default function Edit() {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <button onClick={() => openEdit(f)} className="rounded-lg border px-3 py-1 hover:bg-gray-50">
+                                        <Button onClick={() => openEdit(f)} variant="ghost" size="sm">
                                             Edit
-                                        </button>
-                                        <button onClick={() => delField(f)} className="rounded-lg border px-3 py-1 hover:bg-red-50">
+                                        </Button>
+                                        <Button onClick={() => delField(f)} variant="ghost" size="sm">
                                             Delete
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             ))}
                         </div>
                         {rows.length > 0 && (
                             <div className="flex justify-end pt-3">
-                                <button onClick={onDropList} className="rounded-xl border px-4 py-2 hover:bg-gray-50">
-                                    Save Order
-                                </button>
+                                <Button onClick={onDropList}>Save Order</Button>
                             </div>
                         )}
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
                 {dialogOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
-                        <div className="w-full max-w-lg space-y-4 rounded-2xl bg-white p-5">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold">{editing ? 'Edit Field' : 'Add Field'}</h3>
-                                <button onClick={() => setDialogOpen(false)} className="text-gray-500 hover:underline">
-                                    Close
-                                </button>
-                            </div>
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>{editing ? 'Edit Field' : 'Add Field'}</DialogTitle>
+                            </DialogHeader>
                             <div className="grid gap-3">
-                                <div>
-                                    <label className="block text-sm font-medium">Name</label>
-                                    <input className="w-full rounded-xl border px-3 py-2" value={fName} onChange={(e) => setFName(e.target.value)} />
+                                <div className="space-y-2">
+                                    <Label htmlFor="f-name">Name</Label>
+                                    <Input id="f-name" value={fName} onChange={(e) => setFName(e.target.value)} />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium">Handle</label>
-                                    <input
-                                        className="w-full rounded-xl border px-3 py-2"
-                                        value={fHandle}
-                                        onChange={(e) => setFHandle(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
-                                    />
+                                <div className="space-y-2">
+                                    <Label htmlFor="f-handle">Handle</Label>
+                                    <Input id="f-handle" value={fHandle} onChange={(e) => setFHandle(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))} />
                                     <p className="mt-1 text-xs text-gray-500">Alphanumeric + underscore, diawali huruf/underscore.</p>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium">Type</label>
-                                    <select className="w-full rounded-xl border px-3 py-2" value={fType} onChange={(e) => setFType(e.target.value)}>
-                                        {TYPES.map((t) => (
-                                            <option key={t} value={t}>
-                                                {t}
-                                            </option>
-                                        ))}
-                                    </select>
+                                <div className="space-y-2">
+                                    <Label htmlFor="f-type">Type</Label>
+                                    <Select value={fType} onValueChange={setFType}>
+                                        <SelectTrigger id="f-type">
+                                            <SelectValue placeholder="Select a type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {TYPES.map((t: string) => (
+                                                <SelectItem key={t} value={t}>
+                                                    {t}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <label className="flex items-center gap-2 text-sm">
-                                        <input type="checkbox" checked={fRequired} onChange={(e) => setFRequired(e.target.checked)} /> Required
-                                    </label>
+                                    <div className="flex items-center space-x-2">
+                                        <Checkbox id="f-required" checked={fRequired} onCheckedChange={(e) => setFRequired(!!e)} />
+                                        <Label htmlFor="f-required" className="text-sm">
+                                            Required
+                                        </Label>
+                                    </div>
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm">Max</span>
-                                        <input
+                                        <Input
                                             type="number"
-                                            className="w-24 rounded-xl border px-3 py-2"
+                                            className="w-24"
                                             value={fMax}
                                             onChange={(e) => setFMax(e.target.value === '' ? '' : Number(e.target.value))}
                                         />
@@ -235,15 +242,13 @@ export default function Edit() {
                                 </div>
                             </div>
                             <div className="flex justify-end gap-2 pt-2">
-                                <button onClick={() => setDialogOpen(false)} className="rounded-xl border px-4 py-2 hover:bg-gray-50">
+                                <Button onClick={() => setDialogOpen(false)} variant="ghost">
                                     Cancel
-                                </button>
-                                <button onClick={submitField} className="rounded-xl border px-4 py-2 hover:bg-gray-50">
-                                    {editing ? 'Save' : 'Add'}
-                                </button>
+                                </Button>
+                                <Button onClick={submitField}>{editing ? 'Save' : 'Add'}</Button>
                             </div>
-                        </div>
-                    </div>
+                        </DialogContent>
+                    </Dialog>
                 )}
             </div>
         </>
