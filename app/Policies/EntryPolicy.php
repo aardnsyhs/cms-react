@@ -13,7 +13,7 @@ class EntryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('entries.view');
     }
 
     /**
@@ -21,7 +21,7 @@ class EntryPolicy
      */
     public function view(User $user, Entry $entry): bool
     {
-        return false;
+        return $user->can('entries.view');
     }
 
     /**
@@ -29,7 +29,7 @@ class EntryPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('entries.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class EntryPolicy
      */
     public function update(User $user, Entry $entry): bool
     {
-        return false;
+        return $user->can('entries.update');
     }
 
     /**
@@ -62,5 +62,13 @@ class EntryPolicy
     public function forceDelete(User $user, Entry $entry): bool
     {
         return false;
+    }
+
+    /**
+     * Determine whether the user can publish the model.
+     */
+    public function publish(User $user, Entry $entry): bool
+    {
+        return $user->can('entries.publish');
     }
 }
