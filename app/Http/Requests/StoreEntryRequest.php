@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ContentType;
+use App\Services\SchemaValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEntryRequest extends FormRequest
@@ -21,8 +23,15 @@ class StoreEntryRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        $type = ContentType::findOrFail($this->route('type_id'));
+
+        return array_merge([
+            'locale' => ['required', 'string', 'max:10'],
+            'slug' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'in:draft,review,scheduled,published,archived'],
+            'schedule_at' => ['nullable', 'date'],
+            'publish_at' => ['nullable', 'date'],
+            'unpublish_at' => ['nullable', 'date', 'after_or_equal:publish_at'],
+        ], SchemaValidator::rulesFor($type));
     }
 }
