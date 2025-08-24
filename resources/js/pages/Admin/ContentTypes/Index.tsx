@@ -79,7 +79,7 @@ export default function Index() {
                 </form>
                 <div className="overflow-hidden rounded-2xl border">
                     <table className="min-w-full text-sm">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 text-black">
                             <tr>
                                 <th className="px-4 py-3 text-left font-medium">Name</th>
                                 <th className="px-4 py-3 text-left font-medium">Slug</th>
