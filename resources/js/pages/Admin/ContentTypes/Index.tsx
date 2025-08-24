@@ -107,7 +107,10 @@ export default function Index() {
                                                 View
                                             </Link>
                                             {can.update && (
-                                                <Link href="#" className="rounded-lg border px-3 py-1 hover:bg-gray-50">
+                                                <Link
+                                                    href={route('admin.content-types.edit', t.id)}
+                                                    className="rounded-lg border px-3 py-1 hover:bg-gray-50"
+                                                >
                                                     Edit
                                                 </Link>
                                             )}
