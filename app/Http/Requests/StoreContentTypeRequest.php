@@ -11,7 +11,7 @@ class StoreContentTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()?->can('content_types.create') ?? false;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreContentTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:120'],
+            'slug' => ['required', 'string', 'max:120', 'regex:/^[a-z0-9\-]+$/', 'unique:content_types,slug'],
+            'settings' => ['nullable', 'array'],
         ];
     }
 }

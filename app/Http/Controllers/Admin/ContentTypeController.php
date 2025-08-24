@@ -48,7 +48,7 @@ class ContentTypeController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Admin/ContentTypes/Create');
     }
 
     /**
@@ -56,7 +56,13 @@ class ContentTypeController extends Controller
      */
     public function store(StoreContentTypeRequest $request)
     {
-        //
+        $type = ContentType::create([
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'settings' => $request->input('settings', []),
+        ]);
+
+        return redirect()->route('admin.content-types.edit', $type)->with('success', 'Type created');
     }
 
     /**
@@ -72,7 +78,12 @@ class ContentTypeController extends Controller
      */
     public function edit(ContentType $contentType)
     {
-        //
+        $contentType->load(['fields' => fn($q) => $q->orderBy('order')]);
+
+        return Inertia::render('Admin/ContentTypes/Edit', [
+            'type' => $contentType,
+            'fields' => $contentType->fields,
+        ]);
     }
 
     /**
@@ -80,7 +91,9 @@ class ContentTypeController extends Controller
      */
     public function update(UpdateContentTypeRequest $request, ContentType $contentType)
     {
-        //
+        $contentType->update($request->validated());
+
+        return back()->with('success', 'Type updated');
     }
 
     /**
@@ -88,6 +101,8 @@ class ContentTypeController extends Controller
      */
     public function destroy(ContentType $contentType)
     {
-        //
+        $contentType->delete();
+
+        return redirect()->route('admin.content-types.index')->with('success', 'Type deleted');
     }
 }

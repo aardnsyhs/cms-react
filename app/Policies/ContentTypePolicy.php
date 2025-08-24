@@ -29,7 +29,7 @@ class ContentTypePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('content_types.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class ContentTypePolicy
      */
     public function update(User $user, ContentType $contentType): bool
     {
-        return false;
+        return $user->can('content_types.update');
     }
 
     /**
@@ -45,7 +45,7 @@ class ContentTypePolicy
      */
     public function delete(User $user, ContentType $contentType): bool
     {
-        return false;
+        return $user->can('content_types.delete');
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateContentTypeRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateContentTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()?->can('content_types.update') ?? false;
     }
 
     /**
@@ -21,8 +22,12 @@ class UpdateContentTypeRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route('type')->id ?? null;
+
         return [
-            //
+            'name' => ['required', 'string', 'max:120'],
+            'slug' => ['required', 'string', 'max:120', 'regex:/^[a-z0-9\-]+$/', Rule::unique('content_types', 'slug')->ignore($id)],
+            'settings' => ['nullable', 'array'],
         ];
     }
 }

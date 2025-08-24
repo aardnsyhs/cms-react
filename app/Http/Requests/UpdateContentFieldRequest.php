@@ -11,7 +11,7 @@ class UpdateContentFieldRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()?->can('content_types.update') ?? false;
     }
 
     /**
@@ -22,7 +22,11 @@ class UpdateContentFieldRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:120'],
+            'handle' => ['required', 'string', 'max:120', 'regex:/^[a-zA-Z_][a-zA-Z0-9_]*$/'],
+            'type' => ['required', 'in:text,richtext,media,relation,json,repeater'],
+            'options' => ['nullable', 'array'],
+            'order' => ['nullable', 'integer', 'min:0'],
         ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ContentFieldController;
 use App\Http\Controllers\Admin\ContentTypeController;
 use App\Http\Controllers\Admin\EntryController;
 use App\Http\Controllers\Admin\PublishController;
@@ -17,13 +18,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Content Types
+    Route::get('/content-types', [ContentTypeController::class, 'index'])->name('content-types.index');
+    Route::get('/content-types/create', [ContentTypeController::class, 'create'])->name('content-types.create');
+    Route::post('/content-types', [ContentTypeController::class, 'store'])->name('content-types.store');
+    Route::get('/content-types/{type}/edit', [ContentTypeController::class, 'edit'])->name('content-types.edit');
+    Route::put('/content-types/{type}', [ContentTypeController::class, 'update'])->name('content-types.update');
+    Route::delete('/content-types/{type}', [ContentTypeController::class, 'destroy'])->name('content-types.destroy');
+
+    // FIELDS (nested)
+    Route::post('/content-types/{type}/fields', [ContentFieldController::class, 'store'])->name('content-fields.store');
+    Route::put('/content-types/{type}/fields/{field}', [ContentFieldController::class, 'update'])->name('content-fields.update');
+    Route::delete('/content-types/{type}/fields/{field}', [ContentFieldController::class, 'destroy'])->name('content-fields.destroy');
+    Route::post('/content-types/{type}/fields/reorder', [ContentFieldController::class, 'reorder'])->name('content-fields.reorder');
+
     Route::resource('types', ContentTypeController::class);
     Route::get('types/{type}/entries', [EntryController::class, 'index'])->name('entries.index');
     Route::post('types/{type_id}/entries', [EntryController::class, 'store'])->name('entries.store');
     Route::put('entries/{entry}', [EntryController::class, 'update'])->name('entries.update');
     Route::post('entries/{entry}/publish', [PublishController::class, 'publish'])->name('entries.publish');
-    Route::get('/content-types', [ContentTypeController::class, 'index'])
-        ->name('content-types.index');
+
 });
 
 require __DIR__ . '/settings.php';
