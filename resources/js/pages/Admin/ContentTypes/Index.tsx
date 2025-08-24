@@ -2,7 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
 type ContentType = {
-    id: number;
+    id: string;
     name: string;
     slug: string;
     settings?: Record<string, unknown> | null;
@@ -48,9 +48,8 @@ export default function Index() {
                     <h1 className="text-2xl font-semibold">Content Types</h1>
                     {can.create && (
                         <Link
-                            href="#"
+                            href={route('admin.content-types.create')}
                             className="inline-flex items-center rounded-xl border px-4 py-2 shadow-sm hover:bg-gray-50"
-                            // TODO: ganti ke route create kalau sudah ada
                         >
                             + New Type
                         </Link>
