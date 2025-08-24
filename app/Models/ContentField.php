@@ -12,6 +12,8 @@ class ContentField extends Model
     use HasFactory;
 
     protected $keyType = 'string';
+    protected $fillable = ['content_type_id', 'name', 'handle', 'type', 'options', 'order'];
+    protected $casts = ['options' => 'array'];
     public $incrementing = false;
 
     public static function boot()
@@ -21,5 +23,10 @@ class ContentField extends Model
         static::creating(function ($model) {
             $model->id = Str::uuid();
         });
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(ContentType::class, 'content_type_id');
     }
 }

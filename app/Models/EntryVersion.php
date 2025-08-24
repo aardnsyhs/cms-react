@@ -12,7 +12,10 @@ class EntryVersion extends Model
     use HasFactory;
 
     protected $keyType = 'string';
+    protected $fillable = ['entry_id', 'version', 'data', 'created_by', 'created_at', 'comment'];
+    protected $casts = ['data' => 'array', 'created_at' => 'datetime'];
     public $incrementing = false;
+    public $timestamps = false;
 
     public static function boot()
     {
@@ -21,5 +24,10 @@ class EntryVersion extends Model
         static::creating(function ($model) {
             $model->id = Str::uuid();
         });
+    }
+
+    public function entry()
+    {
+        return $this->belongsTo(Entry::class);
     }
 }

@@ -12,6 +12,8 @@ class ContentType extends Model
     use HasFactory;
 
     protected $keyType = 'string';
+    protected $fillable = ['name', 'slug', 'settings'];
+    protected $casts = ['settings' => 'array'];
     public $incrementing = false;
 
     public static function boot()
@@ -21,5 +23,14 @@ class ContentType extends Model
         static::creating(function ($model) {
             $model->id = Str::uuid();
         });
+    }
+
+    public function fields()
+    {
+        return $this->hasMany(ContentField::class);
+    }
+    public function entries()
+    {
+        return $this->hasMany(Entry::class);
     }
 }

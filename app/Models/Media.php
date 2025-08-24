@@ -12,6 +12,8 @@ class Media extends Model
     use HasFactory;
 
     protected $keyType = 'string';
+    protected $fillable = ['disk', 'path', 'mime', 'size', 'width', 'height', 'alt', 'meta', 'created_by'];
+    protected $casts = ['meta' => 'array'];
     public $incrementing = false;
 
     public static function boot()
@@ -21,5 +23,10 @@ class Media extends Model
         static::creating(function ($model) {
             $model->id = Str::uuid();
         });
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }
