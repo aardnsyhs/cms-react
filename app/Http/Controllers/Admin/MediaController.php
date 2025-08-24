@@ -6,6 +6,7 @@ use App\Models\Media;
 use App\Http\Requests\StoreMediaRequest;
 use App\Http\Requests\UpdateMediaRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class MediaController extends Controller
 {
@@ -47,7 +48,7 @@ class MediaController extends Controller
             'width' => $width,
             'height' => $height,
             'alt' => $request->input('alt'),
-            'created_by' => auth()->id(),
+            'created_by' => Auth::id(),
         ]);
         return response()->json($media, 201);
     }

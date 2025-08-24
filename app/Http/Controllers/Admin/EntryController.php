@@ -7,6 +7,7 @@ use App\Models\Entry;
 use App\Http\Requests\StoreEntryRequest;
 use App\Http\Requests\UpdateEntryRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class EntryController extends Controller
 {
@@ -41,15 +42,15 @@ class EntryController extends Controller
             'schedule_at' => $request->date('schedule_at'),
             'publish_at' => $request->date('publish_at'),
             'unpublish_at' => $request->date('unpublish_at'),
-            'created_by' => auth()->id(),
-            'updated_by' => auth()->id(),
+            'created_by' => Auth::id(),
+            'updated_by' => Auth::id(),
         ]);
 
         $lastVer = $entry->versions()->max('version') ?? 0;
         $entry->versions()->create([
             'version' => $lastVer + 1,
             'data' => $request->input('data', []),
-            'created_by' => auth()->id(),
+            'created_by' => Auth::id(),
             'created_at' => now(),
             'comment' => 'initial',
         ]);
@@ -78,12 +79,12 @@ class EntryController extends Controller
      */
     public function update(UpdateEntryRequest $request, Entry $entry)
     {
-        $entry->update($request->only(['status', 'locale', 'slug', 'schedule_at', 'publish_at', 'unpublish_at']) + ['updated_by' => auth()->id()]);
+        $entry->update($request->only(['status', 'locale', 'slug', 'schedule_at', 'publish_at', 'unpublish_at']) + ['updated_by' => Auth::id()]);
         $lastVer = $entry->versions()->max('version') ?? 0;
         $entry->versions()->create([
             'version' => $lastVer + 1,
             'data' => $request->input('data', []),
-            'created_by' => auth()->id(),
+            'created_by' => Auth::id(),
             'created_at' => now(),
             'comment' => $request->input('comment'),
         ]);
