@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\ContentType;
 use App\Http\Requests\StoreContentTypeRequest;
 use App\Http\Requests\UpdateContentTypeRequest;
+use App\Http\Controllers\Controller;
 
 class ContentTypeController extends Controller
 {

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\ContentType;
 use App\Models\Entry;
 use App\Http\Requests\StoreEntryRequest;
 use App\Http\Requests\UpdateEntryRequest;
+use App\Http\Controllers\Controller;
 
 class EntryController extends Controller
 {
